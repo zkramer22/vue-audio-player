@@ -1,0 +1,54 @@
+{
+    "name": "@zkramer22/vue-audio-player",
+    "version": "1.0.0",
+    "description": "A customizable toggle switch component for Vue 3",
+    "type": "module",
+    "main": "dist/vue-audio-player.cjs.js",
+    "module": "dist/vue-audio-player.esm.js",
+    "unpkg": "dist/vue-audio-player.umd.js",
+    "sideEffects": [
+        "dist/vue-audio-player.css"
+    ],
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "dist/",
+        "src/"
+    ],
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build --mode npm-package",
+        "build:app": "vite build --mode app",
+        "deploy": "npm run build:app && gh-pages -d gh-pages-dist"
+    },
+    "keywords": [
+        "vue3",
+        "vue",
+        "toggle",
+        "switch",
+        "component"
+    ],
+    "author": "Zachary Thomas Kramer",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/zkramer22/vue-audio-player.git"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^5.2.1",
+        "gh-pages": "^5.0.0",
+        "vite": "^6.0.11",
+        "vite-svg-loader": "^5.1.0"
+    },
+    "dependencies": {
+        "gh-pages": "^6.3.0",
+        "vite": "^6.0.11",
+        "vue": "^3.0.0",
+        "wavesurfer.js": "^7.8.16"
+    },
+    "peerDependencies": {
+        "vue": "^3.0.0"
+    },
+    "browserslist": "> 1%, not dead"
+}
