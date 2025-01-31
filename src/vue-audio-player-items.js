@@ -1,36 +1,54 @@
-const S3_PATH = 'https://studio-ztk-audio.s3.us-west-1.amazonaws.com'
+const FILE_PATH = 'https://studio-ztk-audio.s3.us-west-1.amazonaws.com'
 
-const audio = {
-    music: [
-        ['Meditate', 'yokram', 'offerings [vol 1]', 'art-offerings-vol-1'],
-    ],
-}
+const audioArr = [
+    {
+        title: 'Meditate',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+        timestamps: [
+            { time: 0, label: 'intro' },
+            { time: 24.7, label: 'main melody & beat' },
+            { time: 106, label: 'shuffle beat' },
+        ],
+    },
+    {
+        title: 'Cruise',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+        timestamps: [],
+    },
+    {
+        title: 'Mahogany',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+    }
+]
 
-function getAudioObj(obj) {
+function getAudioObj(arr) {
     const audioObj = {}
-    for (const [type, arr] of Object.entries(obj)) {
+    // for (const [type, arr] of Object.entries(audio)) {  // used when audioItems is an object. ex: { type1: [{ title, artist, album }], type2: [], type3: [] }
         for (let i in arr) {
-            const [name, artist, album, art] = arr[i]
-            const filename = name.replaceAll(' ', '+').replaceAll('–', '%E2%80%93')
-            audioObj[`${type}-${i}`] = {
-                name,
+            const { title, artist, album, art, timestamps } = arr[i]
+            const filename = title.replaceAll(' ', '+').replaceAll('–', '%E2%80%93')
+            // audioObj[`${type}-${i}`] = {  // used when audioItems is an object.
+            audioObj[`vue-audio-player_track-${i}`] = {
+                title,
                 artist,
                 album,
-                type,
-                art: `${S3_PATH}/${art}`,
-                url: `${S3_PATH}/${filename}`, 
-                timestamps: [
-                    { time: 0, name: 'TS 1' },
-                    { time: 20, name: 'TS 2' },
-                    { time: 30, name: 'TS 3' },
-                ],
+                // type,
+                art: `${FILE_PATH}/${art}`,
+                url: `${FILE_PATH}/${filename}`, 
+                timestamps,
                 loaded: false,
                 playing: false, 
                 imgLoaded: false,
             }
         }
-    }
+    // }
     return audioObj
 }
 
-export const audioObj = getAudioObj(audio)
+export const audioObj = getAudioObj(audioArr)

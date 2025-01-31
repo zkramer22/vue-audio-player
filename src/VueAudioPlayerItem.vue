@@ -1,21 +1,76 @@
 <script setup>
-import { computed } from 'vue'
-import play from './svg/play.svg?raw'
-import pause from './svg/pause.svg?raw'
+import { computed, reactive } from 'vue'
+import playSVG from './svg/play.svg?raw'
+import pauseSVG from './svg/pause.svg?raw'
+import barsSVG from './svg/bars.svg?raw'
 
-const emit = defineEmits(['createTrack', 'playPauseClick', 'loadImg'])
+const emit = defineEmits(['createTrack', 'playPauseClick', 'loadImg', 'selectTrack'])
 const props = defineProps({
-    item: Object,
+    index: Number,
     trackId: String,
+    title: String,
+    artist: String,
+    album: String,
+    art: String,
     playing: Boolean,
-    loaded: Boolean,
     loading: Boolean,
+    loaded: Boolean,
+    selected: Boolean,
     imgLoaded: Boolean,
     albumView: Boolean,
+    primaryColor: String,
+    secondaryColor: String,
+    textColor: String,
 })
-const { name, artist, album, art } = props.item
 
-const activeClass = computed(() => props.loaded ? 'active' : '')
+const styleVars = computed(() => {
+    return {
+        wrapper: {
+            backdropFilter: props.selected
+                ? 'brightness(1.7)'
+                : 'none'
+        },
+        playPause: {
+            color: props.loaded
+                ? props.primaryColor
+                : props.textColor || props.secondaryColor
+        },
+        title: {
+            color: props.loaded
+            ? props.primaryColor
+            : props.textColor || props.secondaryColor
+        },
+        text: {
+            color: props.textColor,
+        },
+    }
+})
+
+const state = reactive({
+    hovered: false,
+})
+
+const computedPlayPause = computed(() => {
+    let playPause, svgColor
+
+    if (props.selected || state.hovered) {
+        if (props.playing) playPause = pauseSVG
+        else if (props.loading) playPause = '•••'
+        else playPause = playSVG
+
+        svgColor = props.secondaryColor
+    }
+    else {
+        if (props.playing) playPause = barsSVG
+        else playPause = `${props.index + 1}`
+        
+        svgColor = props.primaryColor
+    }
+
+    return playPause.replace(/fill="[^"]*"/g, `fill="${svgColor}"`)
+})
+
+const activeClass = computed(() => props.selected ? 'active' : '')
 const albumClass = computed(() => props.albumView ? 'album' : '')
 
 function playPauseClick() {
@@ -28,6 +83,9 @@ function doubleClick() {
     if (props.loaded) emit('playPauseClick', props.trackId)
     else emit('createTrack', props.trackId)
 }
+function selectTrack() {
+    if (!props.selected) emit('selectTrack', props.trackId)
+}
 function loadImg() {
     emit('loadImg', 'album', props.trackId)
 }
@@ -35,25 +93,34 @@ function loadImg() {
 </script>
 
 <template>
-    <div :class="`audio-player-item-wrapper ${activeClass} ${albumClass}`" @dblclick="doubleClick">
-        <div v-show="albumView" class="album-img flex-centered">
+    <div :class="`vue-audio-player-item_wrapper ${activeClass} ${albumClass}`" 
+        @dblclick="doubleClick" @click="selectTrack"
+        @mouseenter="state.hovered = true"
+        @mouseleave="state.hovered = false"
+    >
+        <!-- ALBUM VIEW -->
+        <div v-show="albumView" class="album-img vue-audio-player_flex-centered">
             <div v-if="!imgLoaded" class="loading-shimmer"></div>
             <img :src="art" @load="loadImg" />
-            <div class="play-pause flex-centered album" @click="playPauseClick">
-                <div v-if="playing" v-html="pause" class="pause"></div>
-                <div v-else-if="loading">•••</div> 
-                <div v-else v-html="play" class="play"></div>
+            <div @click="playPauseClick"
+                 class="play-pause vue-audio-player_flex-centered album" 
+                 :style="styleVars.playPause"
+            >
+                <div v-html="computedPlayPause"></div>
             </div>
         </div>
+
+        <!-- LIST VIEW -->
         <div :class="`audio-player-item ${albumClass}`">
-            <div v-show="!albumView" :class="`play-pause flex-centered`" @click="playPauseClick">
-                <div v-if="playing" v-html="pause" class="pause"></div>
-                <div v-else-if="loading">•••</div> 
-                <div v-else v-html="play" class="play"></div>
+            <div v-show="!albumView" @click="playPauseClick"
+                 :class="`play-pause vue-audio-player_flex-centered`" 
+                 :style="styleVars.playPause"
+            >
+                <div v-html="computedPlayPause"></div>
             </div>
-            <div :class="`audio-column title`">{{ name }}</div>
-            <div v-if="artist" class="audio-column small">{{ artist }}</div>
-             <div v-if="album" class="audio-column small">{{ album }}</div>
+            <div :class="`audio-column title`" :style="styleVars.title">{{ title }}</div>
+            <div v-if="artist" class="audio-column small" :style="styleVars.text">{{ artist }}</div>
+             <div v-if="album" class="audio-column small" :style="styleVars.text">{{ album }}</div>
         </div>
     </div>
 </template>
@@ -65,41 +132,38 @@ function loadImg() {
     padding: 0 10px 10px;
 }
 
-.audio-player-item-wrapper {
+.vue-audio-player-item_wrapper {
     position: relative;
-    padding: 0 12px;
+    width: 100%;
+    padding: 0 10px;
     user-select: none;
 }
 
-.audio-player-item-wrapper:hover {
-    background-color: darkgray;
+.vue-audio-player-item_wrapper:hover {
+    backdrop-filter: brightness(1.4);
 }
 
-.audio-player-item-wrapper:active {
-    background-color: gray;
+.vue-audio-player-item_wrapper.active {
+    backdrop-filter: brightness(1.7);
 }
 
-.audio-player-item-wrapper.active {
-    background-color: rgba(147, 147, 147, 0.8);
-}
-
-.audio-player-item-wrapper.album {
+.vue-audio-player-item_wrapper.album {
     padding: 10px;
     border-radius: 7px;
 }
 
-.audio-player-item-wrapper.album .album-img {
+.vue-audio-player-item_wrapper.album .album-img {
     position: relative;
     border-radius: 7px;
     overflow: hidden;
 }
 
-.audio-player-item-wrapper.album .album-img .play-pause {
+.vue-audio-player-item_wrapper.album .album-img .play-pause {
     position: absolute;
     opacity: 0;
 }
 
-.audio-player-item-wrapper.album:hover .album-img .play-pause {
+.vue-audio-player-item_wrapper.album:hover .album-img .play-pause {
     opacity: 1;
 }
 
@@ -113,7 +177,7 @@ function loadImg() {
 .audio-player-item .audio-column {
     display: flex;
     align-items: center;
-    width: 300px;
+    width: 33%;
     font-size: 16px;
     text-overflow: ellipsis;
 }
@@ -140,7 +204,6 @@ function loadImg() {
     margin-right: 10px;
     width: 20px;
     height: 20px;
-    border-radius: 50%;
 }
 
 .play-pause.album {
@@ -154,11 +217,6 @@ function loadImg() {
 
 .play-pause.album:hover {
     background-color: violet;
-}
-
-.play,
-.pause {
-    display: flex;
 }
 
 
