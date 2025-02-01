@@ -1,7 +1,55 @@
 const FILE_PATH = 'https://studio-ztk-audio.s3.us-west-1.amazonaws.com'
 
 const audioArr = [
+    // insert track objects here:
     {
+        title: 'Meditate',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+        timestamps: [
+            { time: 0, label: 'intro' },
+            { time: 24.7, label: 'main melody & beat' },
+            { time: 106, label: 'shuffle beat' },
+        ],
+    },
+    {
+        title: 'Cruise',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+        timestamps: [],
+    },
+    {
+        title: 'Mahogany',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+    },
+    {
+        title: 'Meditate',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+        timestamps: [
+            { time: 0, label: 'intro' },
+            { time: 24.7, label: 'main melody & beat' },
+            { time: 106, label: 'shuffle beat' },
+        ],
+    },
+    {
+        title: 'Cruise',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+        timestamps: [],
+    },
+    {
+        title: 'Mahogany',
+        artist: 'yokram',
+        album: 'offerings [vol 1]',
+        art: 'art-offerings-vol-1',
+    },    {
         title: 'Meditate',
         artist: 'yokram',
         album: 'offerings [vol 1]',

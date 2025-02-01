@@ -10,7 +10,7 @@ import volumeHiSVG from './svg/volumeHi.svg?raw'
 import { audioPlayer, audioMethods, formatMethods, loaderMethods } from './vue-audio-player-store.js'
 import VueAudioPlayerItem from './VueAudioPlayerItem.vue'
 
-const { timestampClick, createTrack, playPauseClick, selectTrack, closeAudioPlayer, volumeMousedown, toggleMute } = audioMethods
+const { timestampClick, createTrack, prevTrack, nextTrack, playPauseClick, selectTrack, closeAudioPlayer, volumeMousedown, toggleMute } = audioMethods
 const { getFormattedTimestamp } = formatMethods
 
 const props = defineProps({
@@ -115,7 +115,7 @@ const computedPlayPause = computed(() => {
 
 function addKeyListeners() {
     window.addEventListener('keydown', (e) => {
-        const { code } = e
+        const { code, metaKey } = e
         const { loadedTrack, loadingTrack, selectedTrack } = audioPlayer
 
         if (code === 'Space') {
@@ -139,6 +139,12 @@ function addKeyListeners() {
             if (currentIndex > 0) {
                 selectTrack(`vue-audio-player_track-${currentIndex - 1}`)
             }
+        }
+        else if (code === 'ArrowLeft') {
+            if (metaKey) prevTrack()
+        }
+        else if (code === 'ArrowRight') {
+            if (metaKey) nextTrack()
         }
         else if (code === 'Enter') {
             e.preventDefault()
@@ -213,6 +219,11 @@ onMounted(() => {
         </div>
 
         <div class="vue-audio-player_tracklist">
+            <div class="tracklist-header tracklist-row">
+                <div class="play-pause vue-audio-player_flex-centered" :style="styleVars.text">#</div>
+                <div class="audio-column vue-audio-player_flex-aligned" :style="styleVars.text">title</div>
+                <div class="audio-column vue-audio-player_flex-aligned" :style="styleVars.text">album</div>
+            </div>
             <VueAudioPlayerItem v-for="(item, trackId, index) in props.audioItems" 
                 :key="`audio-item-${trackId}`" :index
                 v-bind="item"
@@ -365,7 +376,6 @@ svg {
     display: flex;
     align-items: center;
     width: 100%;
-    border-radius: 7px;
     height: 70px;
     margin: 7px auto;
 }
@@ -396,6 +406,20 @@ svg {
 
 .vue-audio-player_tracklist {
     width: 100%;
+}
+
+.tracklist-row {
+    display: grid;
+    grid-template-columns: 35px 1fr 1fr;
+}
+
+.tracklist-header {
+    font-size: .8rem;
+    padding: 0 10px;
+    filter: brightness(.8);
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid white;
 }
 
 @media (hover:hover) {
@@ -432,18 +456,18 @@ svg {
     display: none;
 }
 
-.loading-shimmer {
+.vue-audio-player_loading-shimmer {
     animation-duration: 2.2s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
-    animation-name: shimmer;
+    animation-name: vue-audio-player_shimmer;
     animation-timing-function: linear;
     background: #ddd;
     background: linear-gradient(to right, #e8e8e8 8%, #d5d5d5 18%, #e8e8e8 33%);
     background-size: 1200px 100%;
 }
 
-@keyframes shimmer {
+@keyframes vue-audio-player_shimmer {
     0% {
         background-position: -1200px 0;
     }

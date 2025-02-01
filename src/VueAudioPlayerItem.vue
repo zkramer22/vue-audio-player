@@ -25,11 +25,6 @@ const props = defineProps({
 
 const styleVars = computed(() => {
     return {
-        wrapper: {
-            backdropFilter: props.selected
-                ? 'brightness(1.7)'
-                : 'none'
-        },
         playPause: {
             color: props.loaded
                 ? props.primaryColor
@@ -70,7 +65,8 @@ const computedPlayPause = computed(() => {
     return playPause.replace(/fill="[^"]*"/g, `fill="${svgColor}"`)
 })
 
-const activeClass = computed(() => props.selected ? 'active' : '')
+const selectedClass = computed(() => props.selected ? 'selected' : '')
+const playingClass = computed(() => props.playing ? 'playing' : '')
 const albumClass = computed(() => props.albumView ? 'album' : '')
 
 function playPauseClick() {
@@ -93,14 +89,31 @@ function loadImg() {
 </script>
 
 <template>
-    <div :class="`vue-audio-player-item_wrapper ${activeClass} ${albumClass}`" 
+    <div :class="`vue-audio-player-item_wrapper ${selectedClass} ${playingClass} ${albumClass}`" 
         @dblclick="doubleClick" @click="selectTrack"
         @mouseenter="state.hovered = true"
         @mouseleave="state.hovered = false"
     >
+            <!-- LIST VIEW -->
+        <div :class="`vue-audio-player-item ${albumClass} tracklist-row`">
+            <div v-show="!albumView" @click="playPauseClick"
+                    :class="`play-pause vue-audio-player_flex-centered`" 
+                    :style="styleVars.playPause"
+            >
+                <div v-html="computedPlayPause"></div>
+            </div>
+            <div class="audio-column">
+                <div class="title" :style="styleVars.title">{{ title }}</div>
+                <div v-if="artist" class="artist small-text" :style="styleVars.text">{{ artist }}</div>
+            </div>
+            
+            <div v-if="album" class="audio-column" :style="styleVars.text">{{ album }}</div>
+            <!-- <div>{{ duration }}</div> -->
+        </div>
+    
         <!-- ALBUM VIEW -->
         <div v-show="albumView" class="album-img vue-audio-player_flex-centered">
-            <div v-if="!imgLoaded" class="loading-shimmer"></div>
+            <div v-if="!imgLoaded" class="vue-audio-player_loading-shimmer"></div>
             <img :src="art" @load="loadImg" />
             <div @click="playPauseClick"
                  class="play-pause vue-audio-player_flex-centered album" 
@@ -108,19 +121,6 @@ function loadImg() {
             >
                 <div v-html="computedPlayPause"></div>
             </div>
-        </div>
-
-        <!-- LIST VIEW -->
-        <div :class="`audio-player-item ${albumClass}`">
-            <div v-show="!albumView" @click="playPauseClick"
-                 :class="`play-pause vue-audio-player_flex-centered`" 
-                 :style="styleVars.playPause"
-            >
-                <div v-html="computedPlayPause"></div>
-            </div>
-            <div :class="`audio-column title`" :style="styleVars.title">{{ title }}</div>
-            <div v-if="artist" class="audio-column small" :style="styleVars.text">{{ artist }}</div>
-             <div v-if="album" class="audio-column small" :style="styleVars.text">{{ album }}</div>
         </div>
     </div>
 </template>
@@ -137,14 +137,20 @@ function loadImg() {
     width: 100%;
     padding: 0 10px;
     user-select: none;
+    border-radius: 6px;
 }
 
 .vue-audio-player-item_wrapper:hover {
-    backdrop-filter: brightness(1.4);
+    backdrop-filter: brightness(1.2);
 }
 
-.vue-audio-player-item_wrapper.active {
-    backdrop-filter: brightness(1.7);
+.vue-audio-player-item_wrapper.selected {
+    backdrop-filter: brightness(1.1);
+    filter: brightness(1.5);
+}
+
+.vue-audio-player-item_wrapper.playing {
+    filter: brightness(1.5);
 }
 
 .vue-audio-player-item_wrapper.album {
@@ -167,43 +173,47 @@ function loadImg() {
     opacity: 1;
 }
 
-.audio-player-item {
+.vue-audio-player-item {
     display: flex;
     align-items: center;
     padding: 10px 0;
     width: 100%;
 }
 
-.audio-player-item .audio-column {
-    display: flex;
-    align-items: center;
-    width: 33%;
-    font-size: 16px;
+.vue-audio-player-item .audio-column {
     text-overflow: ellipsis;
 }
 
-.audio-player-item.album {
+.vue-audio-player-item.album {
     flex-direction: column;
     justify-content: center;
     padding: 0;
 }
 
-.audio-player-item.album .audio-column {
+.vue-audio-player-item.album .audio-column {
     width: auto;
 }
 
-.audio-player-item.album .audio-column.title {
+.vue-audio-player-item.album .audio-column.title {
     margin-top: 7px;
 }
 
-.audio-player-item.album .audio-column.small {
-    font-size: 12px;
+.small-text {
+    font-size: .8rem;
+}
+
+.title, .artist {
+    margin: 5px 0;
+}
+
+.artist {
+    filter: brightness(.8);
 }
 
 .play-pause {
-    margin-right: 10px;
     width: 20px;
     height: 20px;
+    font-size: .8rem;
 }
 
 .play-pause.album {

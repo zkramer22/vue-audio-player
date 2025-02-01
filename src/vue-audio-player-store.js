@@ -23,7 +23,7 @@ export const audioPlayer = reactive({
     activeClass: computed(() => audioPlayer.active ? 'active' : ''),
     trackName: computed(() => audioPlayer.loadedTrack ? audioItems[audioPlayer.loadedTrack].title : null),
     timestamps: computed(() => audioPlayer.loadedTrack ? audioItems[audioPlayer.loadedTrack].timestamps : null),
-    loadingClass: computed(() => audioPlayer.loadingTrack ? 'loading-shimmer' : '')
+    loadingClass: computed(() => audioPlayer.loadingTrack ? 'vue-audio-player_loading-shimmer' : '')
 })
 
 export const audioMethods = {
@@ -49,11 +49,32 @@ export const audioMethods = {
         audioItems[trackId].playing = false
         audioPlayer.playingTrack = null
     },
+    prevTrack() {
+        const arr = Object.keys(audioItems)
+        const currentIndex = arr.indexOf(audioPlayer.loadedTrack)
+        if (currentIndex > 0) {
+            audioMethods.createTrack(`vue-audio-player_track-${currentIndex - 1}`)
+        }
+        else {
+            audioMethods.destroyTrack(audioPlayer.loadedTrack)
+        }
+    },
+    nextTrack() {
+        const arr = Object.keys(audioItems)
+        const currentIndex = arr.indexOf(audioPlayer.loadedTrack)
+        if (currentIndex < arr.length - 1) {
+            audioMethods.createTrack(`vue-audio-player_track-${currentIndex + 1}`)
+        }
+        else {
+            audioMethods.destroyTrack(audioPlayer.loadedTrack)
+        }
+    },
     destroyTrack(trackId) {
         audioMethods.stopTrack(trackId)
         audioMethods.unloadTrack(trackId)
         audioPlayer.wavesurfer.stop()
         audioPlayer.wavesurfer.destroy()
+        audioPlayer.wavesurfer = null
     },
     playPauseClick(trackId) {
         if (!trackId) {
@@ -98,7 +119,7 @@ export const audioMethods = {
                 audioMethods.createTrack(`vue-audio-player_track-${currentIndex + 1}`)
             }
             else {
-                audioMethods.stopTrack(trackId)
+                audioMethods.destroyTrack(trackId)
             }
         })
     },
