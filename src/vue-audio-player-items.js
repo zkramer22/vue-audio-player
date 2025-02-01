@@ -99,4 +99,4 @@ function getAudioObj(arr) {
     return audioObj
 }
 
-export const audioObj = getAudioObj(audioArr)
+export default getAudioObj(audioArr)
