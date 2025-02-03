@@ -1,8 +1,8 @@
 <script setup>
 import { computed, reactive } from 'vue'
-import playSVG from './svg/play.svg?raw'
-import pauseSVG from './svg/pause.svg?raw'
-import barsSVG from './svg/bars.svg?raw'
+import playSVG from '../assets/play.svg?raw'
+import pauseSVG from '../assets/pause.svg?raw'
+import barsSVG from '../assets/bars.svg?raw'
 
 const emit = defineEmits(['createTrack', 'playPauseClick', 'loadImg', 'selectTrack'])
 const props = defineProps({
@@ -48,7 +48,7 @@ const state = reactive({
 const computedPlayPause = computed(() => {
     let playPause, svgColor
 
-    if (props.selected || state.hovered) {
+    if (props.selected || state.hovered || props.loading) {
         if (props.playing) playPause = pauseSVG
         else if (props.loading) playPause = '•••'
         else playPause = playSVG

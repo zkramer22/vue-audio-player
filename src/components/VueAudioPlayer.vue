@@ -1,21 +1,23 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import playSVG from './svg/play.svg?raw'
-import pauseSVG from './svg/pause.svg?raw'
-import xSVG from './svg/closeX.svg?raw'
-import volumeOffSVG from './svg/volumeOff.svg?raw'
-import volumeLoSVG from './svg/volumeLo.svg?raw'
-import volumeMidSVG from './svg/volumeMid.svg?raw'
-import volumeHiSVG from './svg/volumeHi.svg?raw'
-import { audioPlayer, audioMethods, formatMethods, loaderMethods } from './vue-audio-player-store.js'
-import VueAudioPlayerItem from './VueAudioPlayerItem.vue'
+import playSVG from '../assets/play.svg?raw'
+import pauseSVG from '../assets/pause.svg?raw'
+import xSVG from '../assets/closeX.svg?raw'
+import volumeOffSVG from '../assets/volumeOff.svg?raw'
+import volumeLoSVG from '../assets/volumeLo.svg?raw'
+import volumeMidSVG from '../assets/volumeMid.svg?raw'
+import volumeHiSVG from '../assets/volumeHi.svg?raw'
+import VueAudioPlayerItem from '../components/VueAudioPlayerItem.vue'
 
-const { timestampClick, createTrack, prevTrack, nextTrack, playPauseClick, selectTrack, closeAudioPlayer, volumeMousedown, toggleMute } = audioMethods
-const { getFormattedTimestamp } = formatMethods
+import { useAudioPlayer } from '../store/vue-audio-player.js'
 
 const props = defineProps({
-    audioItems: {
+    tracksArr: {
         type: Array[Object],
+    },
+    baseUrl: {
+        type: String,
+        default: "",
     },
     primaryColor: {
         type: String,
@@ -41,8 +43,16 @@ const props = defineProps({
         type: Boolean, 
         default: false,
     },
-
 })
+
+const { 
+    audioPlayer,
+    playPauseClick, timestampClick, 
+    selectTrack, createTrack, prevTrack, nextTrack, 
+    volumeMousedown, toggleMute,
+    closeAudioPlayer,
+    loadImg, getFormattedTimestamp,
+} = useAudioPlayer(props.tracksArr, props.baseUrl, props.useSpotify)
 
 const styleVars = computed(() => {
     return {
@@ -76,10 +86,7 @@ const styleVars = computed(() => {
         }
     }
 })
-
-const vueAudioPlayer = ref(null)
 const fixedClass = computed(() => props.fixed ? 'vue-audio-player_fixed' : '')
-
 const computedTitle = computed(() => {
     if (audioPlayer.active) {
         if (audioPlayer.loadedTrack) return audioPlayer.trackName
@@ -113,6 +120,8 @@ const computedPlayPause = computed(() => {
     return playPause.replace(/fill="[^"]*"/g, `fill="${props.secondaryColor}"`)
 })
 
+const vueAudioPlayer = ref(null)
+
 function addKeyListeners() {
     window.addEventListener('keydown', (e) => {
         const { code, metaKey } = e
@@ -126,7 +135,7 @@ function addKeyListeners() {
         }
         else if (code === 'ArrowDown') {
             e.preventDefault()
-            const arr = Object.keys(props.audioItems)
+            const arr = Object.keys(audioPlayer.tracks)
             const currentIndex = arr.indexOf(selectedTrack)
             if (currentIndex < arr.length - 1) {
                 selectTrack(`vue-audio-player_track-${currentIndex + 1}`)
@@ -134,7 +143,7 @@ function addKeyListeners() {
         }
         else if (code === 'ArrowUp') {
             e.preventDefault()
-            const arr = Object.keys(props.audioItems)
+            const arr = Object.keys(audioPlayer.tracks)
             const currentIndex = arr.indexOf(selectedTrack)
             if (currentIndex > 0) {
                 selectTrack(`vue-audio-player_track-${currentIndex - 1}`)
@@ -224,17 +233,18 @@ onMounted(() => {
                 <div class="audio-column vue-audio-player_flex-aligned" :style="styleVars.text">title</div>
                 <div class="audio-column vue-audio-player_flex-aligned" :style="styleVars.text">album</div>
             </div>
-            <VueAudioPlayerItem v-for="(item, trackId, index) in props.audioItems" 
+            
+            <VueAudioPlayerItem v-for="(item, trackId, index) in audioPlayer.tracks" 
                 :key="`audio-item-${trackId}`" :index
                 v-bind="item"
                 :trackId
                 :loading="audioPlayer.loadingTrack === trackId"
                 :selected="audioPlayer.selectedTrack === trackId"
                 :imgLoaded="item.imgLoaded"
-                @create-track="audioMethods.createTrack"
-                @play-pause-click="audioMethods.playPauseClick"
-                @load-img="loaderMethods.loadImg"
-                @select-track="audioMethods.selectTrack"
+                @create-track="createTrack"
+                @play-pause-click="playPauseClick"
+                @load-img="loadImg"
+                @select-track="selectTrack"
                 :primaryColor
                 :secondaryColor
                 :textColor
@@ -262,11 +272,12 @@ svg {
 
 .vue-audio-player_wrapper {
     font-size: 1rem;
-    padding: 10px;
+    padding: 14px;
     display: grid;
     grid-template-rows: 1fr 3fr;
     width: 100%;
     max-width: 100%;
+    border-radius: 14px;
 }
 
 .vue-audio-player_wrapper #vue-audio-player_play-pause {

@@ -13,8 +13,11 @@
         "access": "public"
     },
     "files": [
-        "dist/",
-        "src/"
+        "dist",
+        "src/components",
+        "src/store",
+        "src/assets",
+        "main.js"
     ],
     "scripts": {
         "dev": "vite",
