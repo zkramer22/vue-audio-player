@@ -1,3 +1,3 @@
 // might have to import CSS file
-import VueAudioPlayer from './VueAudioPlayer.vue'
+import VueAudioPlayer from './components/VueAudioPlayer.vue'
 export default VueAudioPlayer
