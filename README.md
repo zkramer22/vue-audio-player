@@ -36,12 +36,12 @@ Example:
 </script>
 
 <template>
-    <vue-audio-player v-bind="audioPlayer1Props" />
+    <vue-audio-player />
 </template>
 ```
 
 
-This the default style:\
+### default style:
 <picture>
   <img alt="Image Alt Text" src="/img/default.png">
 </picture>
@@ -122,7 +122,7 @@ This the default style:\
 </template>
 ```
 
- With styles applied:\
+### styles props applied:
 <picture>
   <img alt="Image Alt Text" src="/img/with-styles.png">
 </picture>
