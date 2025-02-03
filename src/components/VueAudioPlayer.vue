@@ -7,7 +7,7 @@ import volumeOffSVG from '../assets/volumeOff.svg?raw'
 import volumeLoSVG from '../assets/volumeLo.svg?raw'
 import volumeMidSVG from '../assets/volumeMid.svg?raw'
 import volumeHiSVG from '../assets/volumeHi.svg?raw'
-import VueAudioPlayerItem from '../components/VueAudioPlayerItem.vue'
+import VueAudioPlayerItem from './VueAudioPlayerItem.vue'
 
 import { useAudioPlayer } from '../store/vue-audio-player.js'
 
