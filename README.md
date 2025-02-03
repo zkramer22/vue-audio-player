@@ -42,7 +42,6 @@ Example:
 
 
 This the default style:\
-
 <picture>
   <img alt="Image Alt Text" src="/img/default.png">
 </picture>
@@ -124,7 +123,6 @@ This the default style:\
 ```
 
  With styles applied:\
-
 <picture>
   <img alt="Image Alt Text" src="/img/with-styles.png">
 </picture>
