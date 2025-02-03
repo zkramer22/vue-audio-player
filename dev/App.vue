@@ -105,7 +105,7 @@ html, body {
     text-align: center;
 }
 h1, h2, h4 {
-    /* color: #120f2a; */
+    color: #120f2a;
 }
 h2 {
     margin: 5px 0 15px;
