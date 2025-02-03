@@ -58,7 +58,7 @@ const styles = {
 const audioPlayerProps = {
     tracksArr,
     baseUrl,
-    ...styles,
+    // ...styles,
 }
 
 </script>
@@ -83,8 +83,9 @@ html, body {
     width: 100%;
     height: 100%;
     flex-direction: column;
+
     /* lavender */
-    /* background-color: #d4d0ff; */
+    background-color: #d4d0ff;
 
     /* light blue */
     /* background-color: #A7CCED; */
