@@ -1,6 +1,6 @@
 {
     "name": "@zkramer22/vue-audio-player",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A customizable toggle switch component for Vue 3",
     "type": "module",
     "main": "dist/vue-audio-player.cjs.js",
