@@ -48,13 +48,17 @@ const tracksArr = [
 
 const baseUrl = 'https://studio-ztk-audio.s3.us-west-1.amazonaws.com'
 
-const audioPlayer1Props = {
-    tracksArr,
-    baseUrl,
+const styles = {
     primaryColor: '#63ADF2',
     secondaryColor: '#ffffff',
     bgColor: '#545E75',
     textColor: 'white',
+}
+
+const audioPlayerProps = {
+    tracksArr,
+    baseUrl,
+    ...styles,
 }
 
 </script>
@@ -66,7 +70,7 @@ const audioPlayer1Props = {
 
     <div class="spacer"></div>
 
-    <VueAudioPlayer v-bind="audioPlayer1Props" /> 
+    <VueAudioPlayer v-bind="audioPlayerProps" /> 
 </template>
 
 <style>

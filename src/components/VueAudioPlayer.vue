@@ -14,6 +14,7 @@ import { useAudioPlayer } from '../store/vue-audio-player.js'
 const props = defineProps({
     tracksArr: {
         type: Array[Object],
+        default: [],
     },
     baseUrl: {
         type: String,
@@ -37,7 +38,6 @@ const props = defineProps({
     },
     timestampBgColor: {
         type: String,
-        // default: '#7872c1',
     },
     fixed: {
         type: Boolean, 
