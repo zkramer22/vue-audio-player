@@ -40,7 +40,9 @@ Example:
 </template>
 ```
 
+
 This the default style:\
+
 <picture>
   <img alt="Image Alt Text" src="/img/default.png">
 </picture>
@@ -106,10 +108,10 @@ This the default style:\
     const baseUrl = 'https://studio-ztk-audio.s3.us-west-1.amazonaws.com'
 
     const styles: {
-        primaryColor: '#63ADF2',
-        secondaryColor: '#ffffff',
-        bgColor: '#545E75',
-        textColor: 'white',
+        primaryColor: "#63ADF2",
+        secondaryColor: "#ffffff",
+        bgColor: "#545E75",
+        textColor: "white",
     }
 
     const audioPlayerProps = { tracksArr, baseUrl, ...styles }
@@ -120,6 +122,8 @@ This the default style:\
     <vue-audio-player v-model="audioPlayerProps" />
 </template>
 ```
+
+ With styles applied:\
 
 <picture>
   <img alt="Image Alt Text" src="/img/with-styles.png">
